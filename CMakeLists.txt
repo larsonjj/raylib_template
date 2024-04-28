@@ -66,6 +66,7 @@ target_sources(${PROJECT_NAME} PRIVATE ${PROJECT_SOURCES})
 target_include_directories(${PROJECT_NAME} PRIVATE ${PROJECT_INCLUDE})
 
 if (APPLE)
+    target_compile_definitions(${PROJECT_NAME} PRIVATE SDL_HINT_OPENGL_ES_DRIVER=1)
     target_link_libraries(${PROJECT_NAME} PRIVATE box2d raylib SDL2::SDL2main SDL2::SDL2-static ${COCOA_LIBRARY} ${OPENGL_LIBRARY} ${IOKIT_LIBRARY} ${CORE_FOUNDATION_LIBRARY} ${CORE_VIDEO_LIBRARY} ${ANGLE_GLESv2_LIBRARY} ${ANGLE_EGL_LIBRARY})
 else()
     target_link_libraries(${PROJECT_NAME} PRIVATE box2d raylib SDL2::SDL2main SDL2::SDL2-static)
