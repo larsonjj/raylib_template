@@ -11,8 +11,7 @@
     },
     "editor.defaultFormatter": "xaver.clang-format",
     "files.associations": {
-        "*.script": "lua",
-        "glad_gles2.h": "c"
-    }
-    // "cmake.buildDirectory": "${workspaceFolder}/build-${buildKit}",
+        "*.script": "lua"
+    },
+    "cmake.buildDirectory": "${workspaceFolder}/build"
 }
