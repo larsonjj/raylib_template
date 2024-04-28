@@ -9,6 +9,10 @@
         ],
         "externalConsole": false
     },
-    "editor.defaultFormatter": "xaver.clang-format"
+    "editor.defaultFormatter": "xaver.clang-format",
+    "files.associations": {
+        "*.script": "lua",
+        "glad_gles2.h": "c"
+    }
     // "cmake.buildDirectory": "${workspaceFolder}/build-${buildKit}",
 }
