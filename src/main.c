@@ -53,6 +53,12 @@ int main(void)
 
     // SetTargetFPS(60);
 
+    // Do I need these?
+    // SDL_GL_SetAttribute(SDL_GL_CONTEXT_EGL, 1);
+    // SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_ES);
+    // SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 2);
+    // SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0);
+
     float tileSize = 1.0f;
     float scale = 50.0f;
 
