@@ -20,9 +20,6 @@ set(BUILD_EXAMPLES OFF CACHE BOOL "" FORCE) # don't build the supplied examples
 set(BUILD_GAMES OFF CACHE BOOL "" FORCE) # don't build the supplied example games
 set(PLATFORM "SDL" CACHE STRING "" FORCE) # build Raylib using SDL2
 set(OPENGL_VERSION "ES 2.0" CACHE STRING "" FORCE) # build Raylib for OpenGL ES 2.0
-set(SDL_OPENGLES ON CACHE BOOL "" FORCE) # build SDL for OpenGL ES 2.0
-set(SDL_OPENGL ON CACHE BOOL "" FORCE) # build SDL for OpenGL 3.3
-set(SDL_VIDEO_DRIVER_COCOA ON CACHE BOOL "" FORCE) # build Angle for OpenGL ES 2.0 and SDL
 
 FetchContent_Declare(
 	box2d
@@ -34,14 +31,14 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(box2d)
 
 FetchContent_Declare(
-        SDL2
+        SDL3
         GIT_REPOSITORY https://github.com/libsdl-org/SDL.git
-        GIT_TAG release-2.30.2
+        GIT_TAG main
         GIT_SHALLOW TRUE
         GIT_PROGRESS TRUE
-        OVERRIDE_FIND_PACKAGE # Force Raylib to find and use the SDL2 we just fetched
+        OVERRIDE_FIND_PACKAGE # Force Raylib to find and use the SDL3 we just fetched
 )
-FetchContent_MakeAvailable(SDL2)
+FetchContent_MakeAvailable(SDL3)
 
 add_git_submodule(external/raylib)
 
@@ -66,10 +63,10 @@ target_sources(${PROJECT_NAME} PRIVATE ${PROJECT_SOURCES})
 target_include_directories(${PROJECT_NAME} PRIVATE ${PROJECT_INCLUDE})
 
 if (APPLE)
-    target_compile_definitions(${PROJECT_NAME} PRIVATE SDL_HINT_OPENGL_ES_DRIVER=1)
-    target_link_libraries(${PROJECT_NAME} PRIVATE box2d raylib SDL2::SDL2main SDL2::SDL2-static ${COCOA_LIBRARY} ${OPENGL_LIBRARY} ${IOKIT_LIBRARY} ${CORE_FOUNDATION_LIBRARY} ${CORE_VIDEO_LIBRARY} ${ANGLE_GLESv2_LIBRARY} ${ANGLE_EGL_LIBRARY})
+    target_compile_definitions(${PROJECT_NAME} PRIVATE SDL_HINT_OPENGL_ES_DRIVER=0)
+    target_link_libraries(${PROJECT_NAME} PRIVATE box2d raylib SDL3::SDL3 SDL3::SDL3-static ${COCOA_LIBRARY} ${OPENGL_LIBRARY} ${IOKIT_LIBRARY} ${CORE_FOUNDATION_LIBRARY} ${CORE_VIDEO_LIBRARY} ${ANGLE_GLESv2_LIBRARY} ${ANGLE_EGL_LIBRARY})
 else()
-    target_link_libraries(${PROJECT_NAME} PRIVATE box2d raylib SDL2::SDL2main SDL2::SDL2-static)
+    target_link_libraries(${PROJECT_NAME} PRIVATE box2d raylib SDL3::SDL3 SDL3::SDL3-static)
 endif()
 
 if (MSVC)

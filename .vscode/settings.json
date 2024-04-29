@@ -11,7 +11,8 @@
     },
     "editor.defaultFormatter": "xaver.clang-format",
     "files.associations": {
-        "*.script": "lua"
+        "*.script": "lua",
+        "*.m": "c"
     },
     "cmake.buildDirectory": "${workspaceFolder}/build"
 }
