@@ -1,6 +1,5 @@
 ﻿cmake_minimum_required(VERSION 3.22)
 include(FetchContent)
-include(AddGitSubmodule.cmake)
 
 project(raylib_template
 	VERSION 0.1.0
@@ -52,7 +51,7 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(SDL3)
 
-add_git_submodule(external/raylib)
+add_subdirectory(external/raylib)
 
 add_executable(${PROJECT_NAME})
 
