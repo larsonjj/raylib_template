@@ -55,16 +55,14 @@ add_subdirectory(external/raylib)
 
 add_executable(${PROJECT_NAME})
 
-find_library(OPENGL_LIBRARY OpenGL)
 if (APPLE)
     # Link required system frameworks for macOS
+    find_library(OPENGL_LIBRARY OpenGL)
     find_library(COCOA_LIBRARY Cocoa)
     find_library(IOKIT_LIBRARY IOKit)
     find_library(CORE_FOUNDATION_LIBRARY CoreFoundation)
     find_library(CORE_VIDEO_LIBRARY CoreVideo)
-endif()
 
-if (APPLE)
     # Define PROJECT_SOURCES as a list of all source files
     file(GLOB_RECURSE PROJECT_SOURCES CONFIGURE_DEPENDS "${CMAKE_CURRENT_LIST_DIR}/src/*.c")
     target_compile_definitions(${PROJECT_NAME} PRIVATE SDL_HINT_OPENGL_ES_DRIVER=0)
