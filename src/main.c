@@ -37,13 +37,13 @@ void DrawEntity(const Entity *entity, Conversion cv)
     DrawTextureEx(entity->texture, ps, -RAD2DEG * radians, textureScale, WHITE);
 
     // I used these circles to ensure the coordinate transformation was correct
-    // DrawCircleV(ps, 5.0f, BLACK);
-    // p = b2Body_GetWorldPoint(entity->bodyId, (b2Vec2){0.0f, 0.0f});
-    // ps = ConvertWorldToScreen(p, cv);
-    // DrawCircleV(ps, 5.0f, BLUE);
-    // p = b2Body_GetWorldPoint(entity->bodyId, (b2Vec2){0.5f * cv.tileSize, -0.5f * cv.tileSize});
-    // ps = ConvertWorldToScreen(p, cv);
-    // DrawCircleV(ps, 5.0f, RED);
+    DrawCircleV(ps, 5.0f, BLACK);
+    p = b2Body_GetWorldPoint(entity->bodyId, (b2Vec2){0.0f, 0.0f});
+    ps = ConvertWorldToScreen(p, cv);
+    DrawCircleV(ps, 5.0f, BLUE);
+    p = b2Body_GetWorldPoint(entity->bodyId, (b2Vec2){0.5f * cv.tileSize, -0.5f * cv.tileSize});
+    ps = ConvertWorldToScreen(p, cv);
+    DrawCircleV(ps, 5.0f, RED);
 }
 
 int main(void)

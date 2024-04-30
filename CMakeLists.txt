@@ -10,7 +10,6 @@ project(raylib_template
 )
 
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
-set(ANGLE_LIBRARY_DIR "${CMAKE_CURRENT_LIST_DIR}/external/angle/macos")
 # Define PROJECT_INCLUDE to be the path to the include directory of the project
 set(PROJECT_INCLUDE "${CMAKE_CURRENT_LIST_DIR}/src")
 set(BUILD_SHARED_LIBS FALSE)
@@ -21,6 +20,13 @@ set(BUILD_GAMES OFF CACHE BOOL "" FORCE) # don't build the supplied example game
 set(PLATFORM "SDL" CACHE STRING "" FORCE) # build Raylib using SDL2
 set(OPENGL_VERSION "ES 2.0" CACHE STRING "" FORCE) # build Raylib for OpenGL ES 2.0
 
+if (APPLE)
+    set(ANGLE_LIBRARY_DIR "${CMAKE_CURRENT_LIST_DIR}/external/angle/macos")
+endif()
+if (WIN32)
+    set(ANGLE_LIBRARY_DIR "${CMAKE_CURRENT_LIST_DIR}/external/angle/win64")
+endif()
+
 FetchContent_Declare(
 	box2d
 	GIT_REPOSITORY https://github.com/erincatto/box2c.git
@@ -29,6 +35,11 @@ FetchContent_Declare(
 	GIT_PROGRESS TRUE
 )
 FetchContent_MakeAvailable(box2d)
+# if(NOT box2d_POPULATED)
+#     FetchContent_Populate(box2d)
+#     add_subdirectory(${box2d_SOURCE_DIR} ${box2d_BINARY_DIR} EXCLUDE_FROM_ALL)
+# endif()
+
 
 FetchContent_Declare(
         SDL3
@@ -39,6 +50,10 @@ FetchContent_Declare(
         OVERRIDE_FIND_PACKAGE # Force Raylib to find and use the SDL3 we just fetched
 )
 FetchContent_MakeAvailable(SDL3)
+# if(NOT SDL3_POPULATED)
+#     FetchContent_Populate(SDL3)
+#     add_subdirectory(${SDL3_SOURCE_DIR} ${SDL3_BINARY_DIR} EXCLUDE_FROM_ALL)
+# endif()
 
 add_git_submodule(external/raylib)
 
@@ -65,6 +80,9 @@ target_include_directories(${PROJECT_NAME} PRIVATE ${PROJECT_INCLUDE})
 if (APPLE)
     target_compile_definitions(${PROJECT_NAME} PRIVATE SDL_HINT_OPENGL_ES_DRIVER=0)
     target_link_libraries(${PROJECT_NAME} PRIVATE box2d raylib SDL3::SDL3 SDL3::SDL3-static ${COCOA_LIBRARY} ${OPENGL_LIBRARY} ${IOKIT_LIBRARY} ${CORE_FOUNDATION_LIBRARY} ${CORE_VIDEO_LIBRARY} ${ANGLE_GLESv2_LIBRARY} ${ANGLE_EGL_LIBRARY})
+elseif (WIN32)
+    target_compile_definitions(${PROJECT_NAME} PRIVATE SDL_HINT_OPENGL_ES_DRIVER=0)
+    target_link_libraries(${PROJECT_NAME} PRIVATE box2d raylib SDL3::SDL3 SDL3::SDL3-static ${ANGLE_GLESv2_LIBRARY} ${ANGLE_EGL_LIBRARY})
 else()
     target_link_libraries(${PROJECT_NAME} PRIVATE box2d raylib SDL3::SDL3 SDL3::SDL3-static)
 endif()

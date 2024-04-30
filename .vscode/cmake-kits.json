@@ -18,8 +18,8 @@
         "visualStudio": "1ad26ee0",
         "visualStudioArchitecture": "x86_amd64",
         "compilers": {
-            "C": "gcc",
-            "CXX": "g++"
+            "C": "C:\\msys64\\mingw64\\bin\\gcc.exe",
+            "CXX": "C:\\msys64\\mingw64\\bin\\g++.exe"
         }
     }
 ]
