@@ -1,6 +1,8 @@
 #include "box2d/box2d.h"
 #include "raylib.h"
 #include "raymath.h"
+// #include <SDL3/SDL.h>
+// #include <stdint.h>
 
 typedef struct Conversion
 {
@@ -49,7 +51,21 @@ void DrawEntity(const Entity *entity, Conversion cv)
 int main(void)
 {
     int width = 1280, height = 720;
+    SetConfigFlags(FLAG_VSYNC_HINT | FLAG_WINDOW_HIGHDPI);
     InitWindow(width, height, "box2d-raylib");
+    SetTargetFPS(60);
+
+    // Custom timming variables
+    double previousTime = GetTime(); // Previous time measure
+    double currentTime = 0.0;        // Current time measure
+    double updateDrawTime = 0.0;     // Update + Draw time
+    double waitTime = 0.0;           // Wait time (if target fps required)
+    float deltaTime = 0.0f;          // Frame time (Update + Draw + Wait time)
+
+    float timeCounter = 0.0f; // Accumulative time counter (seconds)
+    bool pause = false;       // Pause control flag
+
+    int targetFPS = 60; // Our initial target fps
 
     float tileSize = 1.0f;
     float scale = 50.0f;
@@ -95,30 +111,63 @@ int main(void)
         b2CreatePolygonShape(entity->bodyId, &shapeDef, &tilePolygon);
     }
 
-    bool pause = false;
-
     while (!WindowShouldClose())
     {
+        // Update
+        //---------------------------------------------------------------------
+        // uint64_t startPerf = SDL_GetPerformanceCounter();
+        // PollInputEvents(); // Poll input events (SUPPORT_CUSTOM_FRAME_CONTROL)
         if (IsKeyPressed(KEY_P))
         {
             pause = !pause;
         }
 
-        if (pause == false)
+        if (IsKeyPressed(KEY_UP))
         {
-            float deltaTime = GetFrameTime();
-            b2World_Step(worldId, deltaTime, 4);
+            targetFPS += 20;
+        }
+        else if (IsKeyPressed(KEY_DOWN))
+        {
+            targetFPS -= 20;
         }
 
+        if (targetFPS < 0)
+        {
+            targetFPS = 0;
+        }
+
+        if (pause == false)
+        {
+            b2World_Step(worldId, deltaTime, 4);
+            timeCounter += deltaTime; // We count time (seconds)
+        }
+
+        // Draw
+        //---------------------------------------------------------------------
         BeginDrawing();
         ClearBackground(DARKGRAY);
-
         DrawFPS(10, 10);
 
         const char *message = "Hello Box2D!";
         int fontSize = 36;
         int textWidth = MeasureText("Hello Box2D!", fontSize);
+        DrawText(TextFormat("%03.0f ms", timeCounter * 1000.0f),
+                 40,
+                 GetScreenHeight() / 2 - 100,
+                 20,
+                 MAROON);
+        DrawText(TextFormat("%f ms", deltaTime), 40, GetScreenHeight() / 2 - 50, 20, MAROON);
+        DrawText(TextFormat("%f ms", updateDrawTime), 40, GetScreenHeight() / 2 - 0, 20, MAROON);
         DrawText(message, (width - textWidth) / 2, 50, fontSize, LIGHTGRAY);
+
+        DrawText("PRESS SPACE to PAUSE MOVEMENT", 10, GetScreenHeight() - 60, 20, GRAY);
+        DrawText("PRESS UP | DOWN to CHANGE TARGET FPS", 10, GetScreenHeight() - 30, 20, GRAY);
+        DrawText(TextFormat("TARGET FPS: %i", targetFPS), GetScreenWidth() - 240, 10, 20, LIME);
+        DrawText(TextFormat("CURRENT FPS: %i", (int)(1.0f / deltaTime)),
+                 GetScreenWidth() - 240,
+                 40,
+                 20,
+                 GREEN);
 
         for (int i = 0; i < 20; ++i)
         {
@@ -131,8 +180,37 @@ int main(void)
         }
 
         EndDrawing();
+
+        // NOTE: In case raylib is configured to SUPPORT_CUSTOM_FRAME_CONTROL,
+        // Events polling, screen buffer swap and frame time control must be managed by the user
+
+        // SwapScreenBuffer(); // Flip the back buffer to screen (front buffer)
+
+        currentTime = GetTime();
+        // uint64_t endPerf = SDL_GetPerformanceCounter();
+        updateDrawTime = currentTime - previousTime;
+        // float elapsedMS = (endPerf - startPerf) / (float)SDL_GetPerformanceFrequency() * 1000.0f;
+
+        // if (targetFPS > 0) // We want a fixed frame rate
+        // {
+
+        //     waitTime = (1.0f / (float)targetFPS) - updateDrawTime;
+        //     if (waitTime > 0.0)
+        //     {
+        //         WaitTime((float)waitTime);
+        //         currentTime = GetTime();
+        //         deltaTime = (float)(currentTime - previousTime);
+        //     }
+        // }
+        // else
+        deltaTime = (float)updateDrawTime; // Framerate could be variable
+
+        previousTime = currentTime;
+        // SDL_Delay(floor(16.66666f - elapsedMS));
     }
 
+    // Cleanup
+    //---------------------------------------------------------------------
     UnloadTexture(textures[0]);
     UnloadTexture(textures[1]);
 
