@@ -10,6 +10,7 @@ project(raylib_template
 
 set(CMAKE_C_STANDARD 17)
 set(CMAKE_COMPILE_WARNING_AS_ERROR OFF)
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 # Define PROJECT_INCLUDE to be the path to the include directory of the project
