@@ -36,7 +36,7 @@ endif()
 FetchContent_Declare(
 	box2d
 	GIT_REPOSITORY https://github.com/erincatto/box2c.git
-	GIT_TAG 0c30b825863d1d3d31dcfe0f8005751f2508f5e2
+	GIT_TAG main
 	GIT_SHALLOW TRUE
 	GIT_PROGRESS TRUE
 )
@@ -45,7 +45,7 @@ FetchContent_MakeAvailable(box2d)
 FetchContent_Declare(
         SDL3
         GIT_REPOSITORY https://github.com/libsdl-org/SDL.git
-        GIT_TAG 8b06473a11484ddc8e27484f879837bdf54d450e
+        GIT_TAG main
         GIT_SHALLOW TRUE
         GIT_PROGRESS TRUE
         OVERRIDE_FIND_PACKAGE # Force Raylib to find and use the SDL3 we just fetched
