@@ -54,7 +54,7 @@ int main(void)
     const int screenWidth = 1280;
     const int screenHeight = 720;
 
-    SetConfigFlags(FLAG_VSYNC_HINT | FLAG_WINDOW_HIGHDPI);
+    SetConfigFlags(FLAG_VSYNC_HINT | FLAG_WINDOW_HIGHDPI | FLAG_VSYNC_HINT);
     InitWindow(screenWidth, screenHeight, "raylib box2d - custom frame control");
 
     // Custom timming variables
@@ -215,20 +215,20 @@ int main(void)
         currentTime = GetTime();
         updateDrawTime = currentTime - previousTime;
 
-        if (targetFPS > 0) // We want a fixed frame rate
-        {
-            waitTime = targetDeltaTime - updateDrawTime;
-            if (waitTime > 0.0)
-            {
-                WaitTime((float)waitTime);
-                currentTime = GetTime();
-                deltaTime = (float)(currentTime - previousTime);
-            }
-        }
-        else
-        {
-            deltaTime = (float)updateDrawTime; // Framerate could be variable
-        }
+        // if (targetFPS > 0) // We want a fixed frame rate
+        // {
+        //     waitTime = targetDeltaTime - updateDrawTime;
+        //     if (waitTime > 0.0)
+        //     {
+        //         WaitTime((float)waitTime * 0.95f);
+        //         currentTime = GetTime();
+        //         deltaTime = (float)(currentTime - previousTime);
+        //     }
+        // }
+        // else
+        // {
+        deltaTime = (float)updateDrawTime; // Framerate could be variable
+        // }
 
         previousTime = currentTime;
         //----------------------------------------------------------------------------------
