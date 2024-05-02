@@ -1,8 +1,7 @@
 #include "box2d/box2d.h"
 #include "raylib.h"
 #include "raymath.h"
-// #include <SDL3/SDL.h>
-// #include <stdint.h>
+#include <stdio.h>
 
 typedef struct Conversion
 {
@@ -50,10 +49,13 @@ void DrawEntity(const Entity *entity, Conversion cv)
 
 int main(void)
 {
-    int width = 1280, height = 720;
+    // Initialization
+    //--------------------------------------------------------------------------------------
+    const int screenWidth = 1280;
+    const int screenHeight = 720;
+
     SetConfigFlags(FLAG_VSYNC_HINT | FLAG_WINDOW_HIGHDPI);
-    InitWindow(width, height, "box2d-raylib");
-    SetTargetFPS(60);
+    InitWindow(screenWidth, screenHeight, "raylib box2d - custom frame control");
 
     // Custom timming variables
     double previousTime = GetTime(); // Previous time measure
@@ -63,14 +65,16 @@ int main(void)
     float deltaTime = 0.0f;          // Frame time (Update + Draw + Wait time)
 
     float timeCounter = 0.0f; // Accumulative time counter (seconds)
+    float position = 0.0f;    // Circle position
     bool pause = false;       // Pause control flag
 
     int targetFPS = 60; // Our initial target fps
+    float targetDeltaTime = 1.0f / (float)targetFPS;
 
     float tileSize = 1.0f;
     float scale = 50.0f;
 
-    Conversion cv = {scale, tileSize, (float)width, (float)height};
+    Conversion cv = {scale, tileSize, (float)screenWidth, (float)screenHeight};
 
     b2WorldDef worldDef = b2DefaultWorldDef();
     b2WorldId worldId = b2CreateWorld(&worldDef);
@@ -110,64 +114,45 @@ int main(void)
         shapeDef.restitution = 0.1f;
         b2CreatePolygonShape(entity->bodyId, &shapeDef, &tilePolygon);
     }
+    //--------------------------------------------------------------------------------------
 
-    while (!WindowShouldClose())
+    // Main game loop
+    while (!WindowShouldClose()) // Detect window close button or ESC key
     {
+        // if (updateDrawTime > targetDeltaTime)
+        // {
+
         // Update
-        //---------------------------------------------------------------------
-        // uint64_t startPerf = SDL_GetPerformanceCounter();
-        // PollInputEvents(); // Poll input events (SUPPORT_CUSTOM_FRAME_CONTROL)
-        if (IsKeyPressed(KEY_P))
-        {
+        //----------------------------------------------------------------------------------
+        PollInputEvents(); // Poll input events (SUPPORT_CUSTOM_FRAME_CONTROL)
+
+        if (IsKeyPressed(KEY_SPACE))
             pause = !pause;
-        }
 
         if (IsKeyPressed(KEY_UP))
-        {
-            targetFPS += 20;
-        }
+            targetFPS += 1000;
         else if (IsKeyPressed(KEY_DOWN))
-        {
-            targetFPS -= 20;
-        }
+            targetFPS -= 1000;
 
         if (targetFPS < 0)
-        {
             targetFPS = 0;
-        }
 
-        if (pause == false)
+        if (!pause)
         {
+            position += 200 * deltaTime; // We move at 200 pixels per second
+            if (position >= (float)GetScreenWidth())
+                position = 0;
+            timeCounter += deltaTime; // We count time (seconds)
             b2World_Step(worldId, deltaTime, 4);
             timeCounter += deltaTime; // We count time (seconds)
         }
+        //----------------------------------------------------------------------------------
 
         // Draw
-        //---------------------------------------------------------------------
+        //----------------------------------------------------------------------------------
         BeginDrawing();
-        ClearBackground(DARKGRAY);
-        DrawFPS(10, 10);
 
-        const char *message = "Hello Box2D!";
-        int fontSize = 36;
-        int textWidth = MeasureText("Hello Box2D!", fontSize);
-        DrawText(TextFormat("%03.0f ms", timeCounter * 1000.0f),
-                 40,
-                 GetScreenHeight() / 2 - 100,
-                 20,
-                 MAROON);
-        DrawText(TextFormat("%f ms", deltaTime), 40, GetScreenHeight() / 2 - 50, 20, MAROON);
-        DrawText(TextFormat("%f ms", updateDrawTime), 40, GetScreenHeight() / 2 - 0, 20, MAROON);
-        DrawText(message, (width - textWidth) / 2, 50, fontSize, LIGHTGRAY);
-
-        DrawText("PRESS SPACE to PAUSE MOVEMENT", 10, GetScreenHeight() - 60, 20, GRAY);
-        DrawText("PRESS UP | DOWN to CHANGE TARGET FPS", 10, GetScreenHeight() - 30, 20, GRAY);
-        DrawText(TextFormat("TARGET FPS: %i", targetFPS), GetScreenWidth() - 240, 10, 20, LIME);
-        DrawText(TextFormat("CURRENT FPS: %i", (int)(1.0f / deltaTime)),
-                 GetScreenWidth() - 240,
-                 40,
-                 20,
-                 GREEN);
+        ClearBackground(RAYWHITE);
 
         for (int i = 0; i < 20; ++i)
         {
@@ -179,42 +164,83 @@ int main(void)
             DrawEntity(boxEntities + i, cv);
         }
 
+        const char *message = "Hello Box2D!";
+        int fontSize = 36;
+        int textWidth = MeasureText("Hello Box2D!", fontSize);
+        DrawText(TextFormat("timeCounter: %03.0f ms", timeCounter * 1000.0f),
+                 40,
+                 GetScreenHeight() / 2 - 100,
+                 20,
+                 MAROON);
+        DrawText(TextFormat("deltaTime: %f ms", deltaTime),
+                 40,
+                 GetScreenHeight() / 2 - 50,
+                 20,
+                 MAROON);
+        DrawText(TextFormat("updateDrawTime: %f ms", updateDrawTime),
+                 40,
+                 GetScreenHeight() / 2 - 0,
+                 20,
+                 MAROON);
+        DrawText(message, (screenWidth - textWidth) / 2, 50, fontSize, LIGHTGRAY);
+
+
+        for (int i = 0; i < GetScreenWidth() / 200; i++)
+            DrawRectangle(200 * i, 0, 1, GetScreenHeight(), SKYBLUE);
+
+        DrawCircle((int)position, GetScreenHeight() / 2 - 25, 50, RED);
+
+        DrawText("Circle is moving at a constant 200 pixels/sec,\nindependently of the frame rate.",
+                 10,
+                 10,
+                 20,
+                 DARKGRAY);
+        DrawText("PRESS SPACE to PAUSE MOVEMENT", 10, GetScreenHeight() - 60, 20, GRAY);
+        DrawText("PRESS UP | DOWN to CHANGE TARGET FPS", 10, GetScreenHeight() - 30, 20, GRAY);
+        DrawText(TextFormat("TARGET FPS: %i", targetFPS), GetScreenWidth() - 220, 10, 20, LIME);
+        DrawText(TextFormat("CURRENT FPS: %i", (int)(1.0f / deltaTime)),
+                 GetScreenWidth() - 220,
+                 40,
+                 20,
+                 GREEN);
+
         EndDrawing();
 
         // NOTE: In case raylib is configured to SUPPORT_CUSTOM_FRAME_CONTROL,
         // Events polling, screen buffer swap and frame time control must be managed by the user
 
-        // SwapScreenBuffer(); // Flip the back buffer to screen (front buffer)
+        SwapScreenBuffer(); // Flip the back buffer to screen (front buffer)
+        // }
 
         currentTime = GetTime();
-        // uint64_t endPerf = SDL_GetPerformanceCounter();
         updateDrawTime = currentTime - previousTime;
-        // float elapsedMS = (endPerf - startPerf) / (float)SDL_GetPerformanceFrequency() * 1000.0f;
 
-        // if (targetFPS > 0) // We want a fixed frame rate
-        // {
-
-        //     waitTime = (1.0f / (float)targetFPS) - updateDrawTime;
-        //     if (waitTime > 0.0)
-        //     {
-        //         WaitTime((float)waitTime);
-        //         currentTime = GetTime();
-        //         deltaTime = (float)(currentTime - previousTime);
-        //     }
-        // }
-        // else
-        deltaTime = (float)updateDrawTime; // Framerate could be variable
+        if (targetFPS > 0) // We want a fixed frame rate
+        {
+            waitTime = targetDeltaTime - updateDrawTime;
+            if (waitTime > 0.0)
+            {
+                WaitTime((float)waitTime);
+                currentTime = GetTime();
+                deltaTime = (float)(currentTime - previousTime);
+            }
+        }
+        else
+        {
+            deltaTime = (float)updateDrawTime; // Framerate could be variable
+        }
 
         previousTime = currentTime;
-        // SDL_Delay(floor(16.66666f - elapsedMS));
+        //----------------------------------------------------------------------------------
     }
 
-    // Cleanup
-    //---------------------------------------------------------------------
+    // De-Initialization
+    //--------------------------------------------------------------------------------------
     UnloadTexture(textures[0]);
     UnloadTexture(textures[1]);
 
-    CloseWindow();
+    CloseWindow(); // Close window and OpenGL context
+    //--------------------------------------------------------------------------------------
 
     return 0;
 }
