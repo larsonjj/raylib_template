@@ -4,6 +4,9 @@
         "compilers": {
             "C": "clang",
             "CXX": "clang++"
+        },
+        "preferredGenerator": {
+            "name": "Ninja"
         }
     },
     {
@@ -11,6 +14,9 @@
         "compilers": {
             "C": "clang",
             "CXX": "clang++"
+        },
+        "preferredGenerator": {
+            "name": "Ninja"
         }
     },
     {
@@ -20,6 +26,9 @@
         "compilers": {
             "C": "C:\\msys64\\mingw64\\bin\\clang.exe",
             "CXX": "C:\\msys64\\mingw64\\bin\\clang++.exe"
+        },
+        "preferredGenerator": {
+            "name": "Visual Studio 17 2022"
         }
     }
 ]

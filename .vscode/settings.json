@@ -1,12 +1,7 @@
 {
     "C_Cpp.default.configurationProvider": "ms-vscode.cmake-tools",
     "cmake.debugConfig": {
-        "args": [
-            // "--verbose",
-            // "true",
-            // "--filename",
-            // "${workspaceFolder}/app/test.json"
-        ],
+        "args": ["--verbose", "true"],
         "externalConsole": false
     },
     "editor.defaultFormatter": "xaver.clang-format",
@@ -14,6 +9,5 @@
         "*.script": "lua",
         "*.m": "c"
     },
-    "cmake.buildDirectory": "${workspaceFolder}/build",
-    "cmake.preferredGenerators": ["Visual Studio 17 2022", "Ninja"]
+    "cmake.buildDirectory": "${workspaceFolder}/build"
 }

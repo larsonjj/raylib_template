@@ -1,5 +1,6 @@
 # CMake generated files
 build
+_deps
 
 # IDEs
 .idea
