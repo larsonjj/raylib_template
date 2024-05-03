@@ -43,7 +43,7 @@ int main(void)
     const int screenWidth = 1280;
     const int screenHeight = 720;
 
-    SetConfigFlags(FLAG_VSYNC_HINT | FLAG_WINDOW_HIGHDPI);
+    SetConfigFlags(FLAG_WINDOW_HIGHDPI | FLAG_MSAA_4X_HINT | FLAG_VSYNC_HINT);
     InitWindow(screenWidth, screenHeight, "raylib box2d - custom frame control");
 
     bool pause = false; // Pause control flag
@@ -171,7 +171,7 @@ int main(void)
         DrawCircle((int)position, GetScreenHeight() / 2, 50, RED);
         DrawText("PRESS SPACE to PAUSE MOVEMENT", 20, GetScreenHeight() - 40, 20, WHITE);
         DrawText(TextFormat("Fixed FPS: %i", (int)fixedFPS), GetScreenWidth() - 200, 20, 20, GREEN);
-        DrawText(TextFormat("Current FPS: %i", (int)(1.0f / frameTime)),
+        DrawText(TextFormat("Current FPS: %i", (int)(1.0 / frameTime)),
                  GetScreenWidth() - 200,
                  40,
                  20,
