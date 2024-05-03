@@ -1,3 +1,6 @@
+#if defined(PLATFORM_DESKTOP) && defined(GRAPHICS_API_OPENGL_ES2)
+#include "GLFW/glfw3.h"
+#endif
 #include "box2d/box2d.h"
 #include "raylib.h"
 #include "raymath.h"
@@ -43,7 +46,14 @@ int main(void)
     const int screenWidth = 1280;
     const int screenHeight = 720;
 
-    SetConfigFlags(FLAG_WINDOW_HIGHDPI | FLAG_MSAA_4X_HINT | FLAG_VSYNC_HINT);
+#if defined(PLATFORM_DESKTOP) && defined(GRAPHICS_API_OPENGL_ES2)
+#if defined(__APPLE__)
+    glfwInitHint(GLFW_ANGLE_PLATFORM_TYPE, GLFW_ANGLE_PLATFORM_TYPE_METAL);
+#elif defined(_WIN32)
+    glfwInitHint(GLFW_ANGLE_PLATFORM_TYPE, GLFW_ANGLE_PLATFORM_TYPE_D3D11);
+#endif
+#endif
+    SetConfigFlags(FLAG_WINDOW_HIGHDPI | FLAG_VSYNC_HINT | FLAG_MSAA_4X_HINT);
     InitWindow(screenWidth, screenHeight, "raylib box2d - custom frame control");
 
     bool pause = false; // Pause control flag
@@ -51,7 +61,7 @@ int main(void)
 
     double timeCounter = 0.0;
     float fixedFPS = 60.0f;
-    float maxFPS = 600.0f;
+    float maxFPS = 1200.0f;
     double fixedTimeStep = 1.0f / fixedFPS;
     double maxTimeStep = 1.0f / maxFPS;
 
@@ -124,7 +134,7 @@ int main(void)
         if (frameTime < maxTimeStep)
         {
             float waitTime = (float)(maxTimeStep - frameTime);
-            WaitTime(waitTime);
+            WaitTime(1.0f / 1000.0f);
         }
 
 
