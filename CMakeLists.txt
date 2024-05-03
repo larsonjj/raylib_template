@@ -21,7 +21,7 @@ set(BOX2D_BUILD_TESTBED OFF CACHE BOOL "" FORCE)
 set(BUILD_EXAMPLES OFF CACHE BOOL "" FORCE) # don't build the supplied examples
 set(BUILD_GAMES OFF CACHE BOOL "" FORCE) # don't build the supplied example games
 set(PLATFORM "SDL" CACHE STRING "" FORCE) # build Raylib using SDL2
-set(OPENGL_VERSION "ES 2.0" CACHE STRING "" FORCE) # build Raylib for OpenGL ES 2.0
+set(OPENGL_VERSION "3.3" CACHE STRING "" FORCE) # build Raylib for OpenGL ES 2.0
 set(CUSTOMIZE_BUILD ON CACHE BOOL "" FORCE) # build Raylib with custom frame control
 set(SUPPORT_CUSTOM_FRAME_CONTROL ON CACHE BOOL "" FORCE) # build Raylib with custom frame control
 
