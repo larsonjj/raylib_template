@@ -51,7 +51,9 @@ int main(void)
 
     double timeCounter = 0.0;
     float fixedFPS = 60.0f;
+    float maxFPS = 600.0f;
     double fixedTimeStep = 1.0f / fixedFPS;
+    double maxTimeStep = 1.0f / maxFPS;
 
     double currentTime = GetTime();
     double accumulator = 0.0;
@@ -178,6 +180,13 @@ int main(void)
                  GREEN);
 
         EndDrawing();
+
+        if (frameTime < maxTimeStep)
+        {
+            float waitTime = (float)(maxTimeStep - frameTime);
+            printf("Wait time: %f\n", waitTime);
+            WaitTime(waitTime);
+        }
 
         SwapScreenBuffer(); // Flip the back buffer to screen (front buffer)
     }
