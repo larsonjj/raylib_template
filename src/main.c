@@ -120,6 +120,13 @@ int main(void)
 
         currentTime = newTime;
 
+        // Limit frame rate to avoid 100% CPU usage
+        if (frameTime < maxTimeStep)
+        {
+            float waitTime = (float)(maxTimeStep - frameTime);
+            WaitTime(waitTime);
+        }
+
 
         // Input
         //----------------------------------------------------------------------------------
@@ -180,13 +187,6 @@ int main(void)
                  GREEN);
 
         EndDrawing();
-
-        if (frameTime < maxTimeStep)
-        {
-            float waitTime = (float)(maxTimeStep - frameTime);
-            printf("Wait time: %f\n", waitTime);
-            WaitTime(waitTime);
-        }
 
         SwapScreenBuffer(); // Flip the back buffer to screen (front buffer)
     }
