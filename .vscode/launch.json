@@ -8,14 +8,14 @@
             "program": "${command:cmake.launchTargetPath}",
             "args": [],
             "stopAtEntry": false,
-            "cwd": "${command:cmake.launchTargetPath}",
+            "cwd": "${workspaceFolder}",
             "environment": [
                 {
                     "name": "PATH",
                     "value": "${env:PATH}:${command:cmake.getLaunchTargetDirectory}"
                 }
             ],
-            "externalConsole": false,
+            "externalConsole": true,
             "linux": {
                 "MIMode": "gdb",
                 "miDebuggerPath": "/usr/bin/gdb",
@@ -31,7 +31,7 @@
                 "MIMode": "lldb"
             },
             "windows": {
-                "MIMode": "",
+                "MIMode": "gdb",
                 "miDebuggerPath": "C:\\msys64\\mingw64\\bin\\gdb.exe",
                 "setupCommands": [
                     {
