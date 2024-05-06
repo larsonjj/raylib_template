@@ -15,7 +15,7 @@
                     "value": "${env:PATH}:${command:cmake.getLaunchTargetDirectory}"
                 }
             ],
-            "externalConsole": true,
+            "externalConsole": false,
             "linux": {
                 "MIMode": "gdb",
                 "miDebuggerPath": "/usr/bin/gdb",

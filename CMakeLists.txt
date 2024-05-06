@@ -16,7 +16,6 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/")
 set(CMAKE_C_STANDARD 17)
 set(CMAKE_COMPILE_WARNING_AS_ERROR OFF)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
-set(CMAKE_BUILD_TYPE Debug)
 
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 # Define PROJECT_INCLUDE to be the path to the include directory of the project
@@ -109,7 +108,11 @@ elseif (WIN32)
     target_link_libraries(${PROJECT_NAME} PRIVATE box2d raylib ${ANGLE_GLESv2_DLL} ${ANGLE_EGL_DLL})
 
     # Copy the Win64 Angle libraries to the build directory
-    file(COPY "${ANGLE_BIN_DIR}/" DESTINATION "${CMAKE_BINARY_DIR}")
+    if (MSVC)
+        file(COPY "${ANGLE_BIN_DIR}/" DESTINATION "${CMAKE_BINARY_DIR}/${CMAKE_BUILD_TYPE}")
+    else()
+        file(COPY "${ANGLE_BIN_DIR}/" DESTINATION "${CMAKE_BINARY_DIR}")
+    endif()
 else()
     # Define PROJECT_SOURCES as a list of all source files
     file(GLOB_RECURSE PROJECT_SOURCES CONFIGURE_DEPENDS "${CMAKE_CURRENT_LIST_DIR}/src/*.c")
@@ -133,9 +136,9 @@ if (MSVC)
 	set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT ${PROJECT_NAME})
 	set_property(TARGET ${PROJECT_NAME} PROPERTY VS_DEBUGGER_WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}")
     # Ensure that hot-reload is enabled for VS
-    set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /ZI")
-    set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} /SAFESEH:NO")
-    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /SAFESEH:NO")
+    # set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /ZI")
+    # set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} /SAFESEH:NO")
+    # set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /SAFESEH:NO")
 
     # Define static assets to be copied to the build directory
     file(COPY "${CMAKE_CURRENT_SOURCE_DIR}/assets/" DESTINATION "${CMAKE_BINARY_DIR}/${CMAKE_BUILD_TYPE}/assets")
