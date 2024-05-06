@@ -3,7 +3,7 @@ include(FetchContent)
 
 project(raylib_template
 	VERSION 0.1.0
-	DESCRIPTION "Raylib template using SDL2 and Box2d"
+	DESCRIPTION "Raylib template using Box2d and Angle for rendering"
 	HOMEPAGE_URL "https://github.com/larsonjj/raylib_template"
 	LANGUAGES C
 )
@@ -43,16 +43,15 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(box2d)
 
-# set(BUILD_SHARED_LIBS TRUE)
-# FetchContent_Declare(
-#         SDL3
-#         GIT_REPOSITORY https://github.com/libsdl-org/SDL.git
-#         GIT_TAG main
-#         GIT_SHALLOW TRUE
-#         GIT_PROGRESS TRUE
-#         OVERRIDE_FIND_PACKAGE # Force Raylib to find and use the SDL3 we just fetched
-# )
-# FetchContent_MakeAvailable(SDL3)
+set(BUILD_SHARED_LIBS FALSE)
+FetchContent_Declare(
+        raylib
+        GIT_REPOSITORY https://github.com/raysan5/raylib.git
+        GIT_TAG master
+        GIT_SHALLOW TRUE
+        GIT_PROGRESS TRUE
+)
+FetchContent_MakeAvailable(raylib)
 
 set(BUILD_EXAMPLES OFF CACHE BOOL "" FORCE) # don't build the supplied examples
 set(BUILD_GAMES OFF CACHE BOOL "" FORCE) # don't build the supplied example games
@@ -60,8 +59,6 @@ set(PLATFORM "Desktop" CACHE STRING "" FORCE) # build Raylib using SDL2
 set(OPENGL_VERSION "ES 2.0" CACHE STRING "" FORCE) # build Raylib for OpenGL ES 2.0
 set(CUSTOMIZE_BUILD ON CACHE BOOL "" FORCE) # build Raylib with custom frame control
 set(SUPPORT_CUSTOM_FRAME_CONTROL ON CACHE BOOL "" FORCE) # build Raylib with custom frame control
-set(BUILD_SHARED_LIBS FALSE)
-add_subdirectory(external/raylib)
 
 add_executable(${PROJECT_NAME})
 

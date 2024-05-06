@@ -1,4 +1,0 @@
-[submodule "external/raylib"]
-	path = external/raylib
-	url = https://github.com/larsonjj/raylib.git
-    branch = sdl3
