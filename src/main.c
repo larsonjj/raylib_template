@@ -53,7 +53,7 @@ int main(void)
     glfwInitHint(GLFW_ANGLE_PLATFORM_TYPE, GLFW_ANGLE_PLATFORM_TYPE_D3D11);
 #endif
 #endif
-    SetConfigFlags(FLAG_WINDOW_HIGHDPI | FLAG_VSYNC_HINT);
+    SetConfigFlags(FLAG_VSYNC_HINT);
     InitWindow(screenWidth, screenHeight, "raylib box2d - custom frame control");
 
     bool pause = false; // Pause control flag
