@@ -44,6 +44,12 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(box2d)
 
 set(BUILD_SHARED_LIBS FALSE)
+set(BUILD_EXAMPLES OFF CACHE BOOL "" FORCE) # don't build the supplied examples
+set(BUILD_GAMES OFF CACHE BOOL "" FORCE) # don't build the supplied example games
+set(PLATFORM "Desktop" CACHE STRING "" FORCE) # build Raylib for Desktop
+set(OPENGL_VERSION "3.3" CACHE STRING "" FORCE) # build Raylib for OpenGL ES 2.0
+set(CUSTOMIZE_BUILD ON CACHE BOOL "" FORCE) # build Raylib with custom frame control
+set(SUPPORT_CUSTOM_FRAME_CONTROL ON CACHE BOOL "" FORCE) # build Raylib with custom frame control
 FetchContent_Declare(
         raylib
         GIT_REPOSITORY https://github.com/raysan5/raylib.git
@@ -52,13 +58,6 @@ FetchContent_Declare(
         GIT_PROGRESS TRUE
 )
 FetchContent_MakeAvailable(raylib)
-
-set(BUILD_EXAMPLES OFF CACHE BOOL "" FORCE) # don't build the supplied examples
-set(BUILD_GAMES OFF CACHE BOOL "" FORCE) # don't build the supplied example games
-set(PLATFORM "Desktop" CACHE STRING "" FORCE) # build Raylib using SDL2
-set(OPENGL_VERSION "ES 2.0" CACHE STRING "" FORCE) # build Raylib for OpenGL ES 2.0
-set(CUSTOMIZE_BUILD ON CACHE BOOL "" FORCE) # build Raylib with custom frame control
-set(SUPPORT_CUSTOM_FRAME_CONTROL ON CACHE BOOL "" FORCE) # build Raylib with custom frame control
 
 add_executable(${PROJECT_NAME})
 
@@ -70,11 +69,26 @@ if (APPLE)
     find_library(CORE_FOUNDATION_LIBRARY CoreFoundation)
     find_library(CORE_VIDEO_LIBRARY CoreVideo)
 
+    target_include_directories(${PROJECT_NAME} PRIVATE ${PROJECT_INCLUDE})
+
+    find_library(ANGLE_GLESv2_DLL libGLESv2.dylib PATHS ${ANGLE_DIR})
+    if(NOT ANGLE_GLESv2_DLL)
+        message(FATAL_ERROR "ANGLE_GLESv2_DLL library not found")
+    else()
+        message(STATUS "Found ANGLE_GLESv2_DLL: ${ANGLE_GLESv2_DLL}")
+    endif()
+
+    find_library(ANGLE_EGL_DLL libEGL.dylib PATHS ${ANGLE_DIR})
+    if(NOT ANGLE_EGL_DLL)
+        message(FATAL_ERROR "ANGLE_EGL_DLL library not found")
+    else()
+        message(STATUS "Found ANGLE_EGL_DLL: ${ANGLE_EGL_DLL}")
+    endif()
+
     # Define PROJECT_SOURCES as a list of all source files
     file(GLOB_RECURSE PROJECT_SOURCES CONFIGURE_DEPENDS "${CMAKE_CURRENT_LIST_DIR}/src/*.c")
-    target_compile_definitions(${PROJECT_NAME} PRIVATE SDL_HINT_OPENGL_ES_DRIVER=0)
     target_link_libraries(${PROJECT_NAME} PRIVATE box2d raylib ${COCOA_LIBRARY} ${OPENGL_LIBRARY} ${IOKIT_LIBRARY} ${CORE_FOUNDATION_LIBRARY} ${CORE_VIDEO_LIBRARY})
-    target_include_directories(${PROJECT_NAME} PRIVATE ${PROJECT_INCLUDE})
+
     # Copy the MacOS Angle libraries to the build directory
     file(COPY "${ANGLE_DIR}/" DESTINATION "${CMAKE_BINARY_DIR}")
 elseif (WIN32)
@@ -85,7 +99,6 @@ elseif (WIN32)
     # Define PROJECT_SOURCES as a list of all source files
     file(GLOB_RECURSE PROJECT_SOURCES CONFIGURE_DEPENDS "${CMAKE_CURRENT_LIST_DIR}/src/*.c" "${ANGLE_INCLUDE_DIR}/EGL/*.h" "${ANGLE_INCLUDE_DIR}/GLES2/*.h" "${ANGLE_INCLUDE_DIR}/GLES3/*.h")
 
-    target_compile_definitions(${PROJECT_NAME} PRIVATE SDL_HINT_OPENGL_ES_DRIVER=0 SDL_GL_CONTEXT_MAJOR_VERSION=2 SDL_GL_CONTEXT_MINOR_VERSION=0 SDL_GL_CONTEXT_PROFILE_MASK=SDL_GL_CONTEXT_PROFILE_ES SDL_HINT_VIDEO_WIN_D3DCOMPILER="d3dcompiler_47.dll")
     target_include_directories(${PROJECT_NAME} PRIVATE ${PROJECT_INCLUDE} ${ANGLE_INCLUDE_DIR} ${ANGLE_LIB_DIR})
 
     find_library(ANGLE_GLESv2_DLL libGLESv2.dll.lib PATHS ${ANGLE_LIB_DIR})
