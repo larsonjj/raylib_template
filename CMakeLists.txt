@@ -123,11 +123,6 @@ elseif (WIN32)
     else()
         file(COPY "${ANGLE_BIN_DIR}/" DESTINATION "${CMAKE_BINARY_DIR}")
     endif()
-else()
-    # Define PROJECT_SOURCES as a list of all source files
-    file(GLOB_RECURSE PROJECT_SOURCES CONFIGURE_DEPENDS "${CMAKE_CURRENT_LIST_DIR}/src/*.c")
-    target_link_libraries(${PROJECT_NAME} PRIVATE box2d raylib)
-    target_include_directories(${PROJECT_NAME} PRIVATE ${PROJECT_INCLUDE})
 endif()
 
 # Setting ASSETS_PATH
